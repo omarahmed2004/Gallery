@@ -5,12 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="/logo.png">
     <title>Maram Gallery</title>
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Amiri:wght@400;700&family=Lato:wght@300;400&family=Great+Vibes&display=swap" rel="stylesheet">
+    <!-- Custom CSS File -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- Background Animations -->
     <div class="background-blobs">
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
@@ -19,6 +23,7 @@
     
     <div class="nature-container" id="nature-container"></div>
 
+    <!-- Explosive Intro -->
     <div id="intro-overlay">
         <svg class="heart-svg" viewBox="0 0 24 24">
             <path class="heart-path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
@@ -26,6 +31,7 @@
         <h1 class="intro-name">Maram Gallery</h1>
     </div>
 
+    <!-- Content -->
     <div class="content-wrapper" id="main-content">
         
         <header class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
@@ -39,59 +45,52 @@
         </header>
 
         <main class="pb-24 px-4">
+            <!-- Masonry Container -->
             <div class="gallery-masonry">
                 
+                <!-- Image Items -->
                 <div class="gallery-item">
                     <div class="img-wrapper"><img src="photo_1_2025-11-20_12-01-34.jpg" alt="Flowers" loading="lazy"></div>
-                    <div class="shine-overlay"></div>
                     <div class="overlay-text">Colors of Life</div>
                 </div>
 
                 <div class="gallery-item">
                     <div class="img-wrapper"><img src="photo_2_2025-11-20_12-01-34.jpg" alt="River" loading="lazy"></div>
-                    <div class="shine-overlay"></div>
                     <div class="overlay-text">River Serenity</div>
                 </div>
 
                 <div class="gallery-item">
                     <div class="img-wrapper"><img src="photo_3_2025-11-20_12-01-34.jpg" alt="Sunset" loading="lazy"></div>
-                    <div class="shine-overlay"></div>
                     <div class="overlay-text">Sunset Magic</div>
                 </div>
 
                 <div class="gallery-item">
                     <div class="img-wrapper"><img src="photo_6_2025-11-20_12-01-34.jpg" alt="Boats" loading="lazy"></div>
-                    <div class="shine-overlay"></div>
                     <div class="overlay-text">Peaceful Voyage</div>
                 </div>
 
                 <div class="gallery-item">
                     <div class="img-wrapper"><img src="photo_7_2025-11-20_12-01-34.jpg" alt="Blue Water" loading="lazy"></div>
-                    <div class="shine-overlay"></div>
                     <div class="overlay-text">Azure Waters</div>
                 </div>
 
                  <div class="gallery-item">
                     <div class="img-wrapper"><img src="photo_8_2025-11-20_12-01-34.jpg" alt="Evening" loading="lazy"></div>
-                    <div class="shine-overlay"></div>
                     <div class="overlay-text">Night's Calm</div>
                 </div>
 
                 <div class="gallery-item">
                     <div class="img-wrapper"><img src="photo_9_2025-11-20_12-01-34.jpg" alt="Silhouette" loading="lazy"></div>
-                    <div class="shine-overlay"></div>
                     <div class="overlay-text">Shadows & Lights</div>
                 </div>
 
                 <div class="gallery-item">
                     <div class="img-wrapper"><img src="photo_10_2025-11-20_12-01-34.jpg" alt="Moon" loading="lazy"></div>
-                    <div class="shine-overlay"></div>
                     <div class="overlay-text">Radiant Moon</div>
                 </div>
 
                  <div class="gallery-item">
                     <div class="img-wrapper"><img src="photo_55_2025-11-20_12-01-34.jpg" alt="Horizon" loading="lazy"></div>
-                    <div class="shine-overlay"></div>
                     <div class="overlay-text">Broad Horizon</div>
                 </div>
 
@@ -101,6 +100,7 @@
         <footer class="text-center py-8 text-gray-400 text-xs md:text-sm relative z-10">Made with ❤️ for Maram</footer>
     </div>
 
+    <!-- Custom JS File -->
     <script src="script.js"></script>
 </body>
 </html>
