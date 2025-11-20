@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/logo.png">
+    <title>Maram Gallery</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Amiri:wght@400;700&family=Lato:wght@300;400&family=Great+Vibes&display=swap" rel="stylesheet">
+    <style>
+        /* --- Variables & General Styles --- */
+        :root {
+            --primary-color: #E57373;
+            --bg-color: #FFFBF0;
+            --text-color: #2C3E50;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Lato', 'Playfair Display', serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch; 
+            position: relative;
+        }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+        /* --- Background Blobs --- */
+        .background-blobs { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2; overflow: hidden; pointer-events: none; }
+        .blob { position: absolute; border-radius: 50%; filter: blur(60px); opacity: 0.6; animation: blobFloat 20s infinite alternate ease-in-out; }
+        .blob-1 { top: -10%; left: -10%; width: 50vw; height: 50vw; background: #ffdde1; animation-duration: 25s; }
+        .blob-2 { bottom: -10%; right: -10%; width: 40vw; height: 40vw; background: #ee9ca7; animation-duration: 30s; animation-direction: alternate-reverse; }
+        .blob-3 { top: 40%; left: 40%; width: 30vw; height: 30vw; background: #c7efff; opacity: 0.4; animation-duration: 35s; }
+        @keyframes blobFloat { 0% { transform: translate(0, 0) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0, 0) scale(1); } }
+
+        /* --- Nature Elements --- */
+        .nature-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
+        .nature-item { position: absolute; background-size: contain; background-repeat: no-repeat; opacity: 0.7; }
+        .petal { background: linear-gradient(to bottom right, #ffc3a0, #ffafbd); border-radius: 100% 0 100% 0; animation: fall linear infinite; }
+        .leaf { background: linear-gradient(to bottom right, #a8e063, #56ab2f); border-radius: 0 100% 0 100%; animation: fall linear infinite; }
+        .butterfly { position: absolute; width: 20px; height: 20px; animation: fly linear infinite; }
+        .butterfly svg { width: 100%; height: 100%; fill: #F48FB1; animation: flap 0.2s infinite alternate; }
+        @keyframes fall { 0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { transform: translateY(110vh) translateX(100px) rotate(360deg); opacity: 0; } }
+        @keyframes fly { 0% { transform: translate(-10vw, 100vh) scale(0.5); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translate(110vw, -10vh) scale(1); opacity: 0; } }
+        @keyframes flap { from { transform: scaleX(1); } to { transform: scaleX(0.4); } }
+
+        /* --- Explosive Intro Animation --- */
+        #intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1.5s ease-out, visibility 1.5s ease-out; overflow: hidden; }
+        .heart-svg { overflow: visible; width: 180px; height: 180px; transform-origin: center; filter: drop-shadow(0 0 15px rgba(229, 115, 115, 0.5)); }
+        .heart-path { fill: transparent; stroke: var(--primary-color); stroke-width: 3; stroke-dasharray: 1500; stroke-dashoffset: 1500; animation: drawHeart 2s ease-in-out forwards, fillHeart 1s 2s ease-in-out forwards, heartExplodeSequence 2.5s 3s forwards; transform-origin: center; }
+        .intro-name { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 3rem; font-weight: 700; background: linear-gradient(45deg, #E57373, #F06292, #FFD54F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0; animation: textBlast 1.5s 4.4s cubic-bezier(0.22, 1, 0.36, 1) forwards; text-align: center; width: 100%; text-shadow: 0 0 30px rgba(229, 115, 115, 0.5); z-index: 10; }
+        @media (min-width: 768px) { .intro-name { font-size: 5rem; } .heart-svg { width: 250px; height: 250px; } }
+        @keyframes drawHeart { to { stroke-dashoffset: 0; } }
+        @keyframes fillHeart { to { fill: var(--primary-color); stroke: none; } }
+        @keyframes heartExplodeSequence { 0%, 20% { transform: scale(1); } 30% { transform: scale(1.25); } 40% { transform: scale(1); } 50% { transform: scale(1.25); } 60% { transform: scale(0.8); } 100% { transform: scale(50); opacity: 0; } }
+        @keyframes textBlast { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0); filter: blur(20px); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); filter: blur(0); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+
+        /* --- Main Content & Masonry Layout --- */
+        .content-wrapper { opacity: 0; transition: opacity 2s ease-in; }
+        .fade-in-visible { opacity: 1 !important; }
+
+        /* TRUE MASONRY using Columns */
+        .gallery-masonry {
+            column-count: 1;
+            column-gap: 2rem;
+            padding: 1rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        @media (min-width: 640px) { .gallery-masonry { column-count: 2; padding: 2rem; } }
+        @media (min-width: 1024px) { .gallery-masonry { column-count: 3; column-gap: 3rem; } }
+
+        /* Polaroid Card Style */
+        .gallery-item {
+            break-inside: avoid; /* Prevent breaking across columns */
+            margin-bottom: 3rem;
+            position: relative;
+            background: #fff;
+            padding: 15px 15px 50px 15px; /* Extra bottom padding for Polaroid look */
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            transform-origin: center;
+            opacity: 0; /* Initial hidden state */
+            /* Initial Scatter Rotation (will be randomized in JS) */
+            transform: translateY(100px) scale(0.9) rotate(0deg);
+            transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+            perspective: 1000px;
+        }
+
+        /* Visible State (Scrolled in) */
+        .gallery-item.visible {
+            opacity: 1;
+            /* Transform is handled via JS to keep the rotation */
+        }
+
+        /* Continuous Breathing for "Alive" feel */
+        .gallery-item.visible img {
+            animation: photoBreathe 6s infinite alternate ease-in-out;
+        }
+
+        @keyframes photoBreathe {
+            from { transform: scale(1); filter: brightness(1); }
+            to { transform: scale(1.05); filter: brightness(1.05); }
+        }
+
+        /* Hover Effect (Focus) */
+        .gallery-item:hover {
+            z-index: 50;
+            transform: scale(1.1) rotate(0deg) !important; /* Straighten and zoom */
+            box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+        }
+
+        /* Image Wrapper */
+        .img-wrapper {
+            width: 100%;
+            overflow: hidden;
+            /* Slight border radius for the photo inside the polaroid */
+            border: 1px solid #eee; 
+        }
+
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 8s ease; /* Slow pan for breathing */
+        }
+
+        /* Shine Effect on Hover */
+        .shine-overlay {
+            position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
+            background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
+            transform: skewX(-25deg); z-index: 10; pointer-events: none; transition: left 0.5s;
+        }
+        .gallery-item:hover .shine-overlay {
+            left: 200%;
+            transition: left 1s ease-in-out;
+        }
+
+        /* Click Animation */
+        .gallery-item.clicked { animation: clickBounce 0.4s; }
+        @keyframes clickBounce { 0% { transform: scale(1.1); } 50% { transform: scale(1.05); } 100% { transform: scale(1.1); } }
+
+        /* Overlay Text (Handwritten Style for Polaroid) */
+        .overlay-text {
+            position: absolute;
+            bottom: 10px; left: 0; right: 0;
+            text-align: center;
+            font-family: 'Great Vibes', cursive; /* Handwriting font */
+            color: #555;
+            font-size: 1.8rem;
+            opacity: 0.8;
+        }
+
+        /* Header */
+        .hero-text { font-size: 3rem; line-height: 1.2; }
+        @media (min-width: 768px) { .hero-text { font-size: 6rem; } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Click Effects */
+        .click-tooth { position: fixed; font-size: 22px; pointer-events: none; z-index: 9999; animation: floatClickItem 1.2s ease-out forwards; }
+        @keyframes floatClickItem { 0% { transform: scale(0.5) translateY(0) rotate(0deg); opacity: 1; } 100% { transform: scale(1.2) translateY(-60px) translateX(var(--tx)) rotate(var(--rot)); opacity: 0; } }
+        .click-name { position: fixed; font-family: 'Great Vibes', cursive; font-weight: normal; font-size: 2.5rem; background: linear-gradient(45deg, #E57373, #FFD54F, #F06292); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; pointer-events: none; z-index: 10000; text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5); animation: popUpName 1.8s ease-out forwards, shimmer 2s linear infinite; white-space: nowrap; }
+        @keyframes popUpName { 0% { transform: translate(-50%, 0) scale(0.5) rotate(-5deg); opacity: 0; } 20% { transform: translate(-50%, -30px) scale(1.3) rotate(0deg); opacity: 1; } 70% { opacity: 1; transform: translate(-50%, -80px) scale(1.1); } 100% { transform: translate(-50%, -120px) scale(0.8); opacity: 0; } }
+        @keyframes shimmer { to { background-position: 200% center; } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Background Animations -->
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+    
+    <div class="nature-container" id="nature-container"></div>
+
+    <!-- Explosive Intro -->
+    <div id="intro-overlay">
+        <svg class="heart-svg" viewBox="0 0 24 24">
+            <path class="heart-path" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
+        <h1 class="intro-name">Maram Gallery</h1>
+    </div>
+
+    <!-- Content -->
+    <div class="content-wrapper" id="main-content">
+        
+        <header class="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+            <h2 class="font-bold text-gray-800 mb-4 drop-shadow-sm hero-text" id="hero-title"></h2>
+            <p class="hero-subtext text-xl md:text-3xl text-gray-600 max-w-3xl mt-4 font-light italic opacity-0 animate-[fadeIn_2s_1s_forwards]">
+                Nature Through the Lens
+            </p>
+            <div class="mt-8 opacity-0 animate-[fadeIn_2s_1.5s_forwards,bounce_2s_infinite]">
+                <svg class="w-8 h-8 text-[#E57373]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </div>
+        </header>
+
+        <main class="pb-24 px-4">
+            <!-- Masonry Container -->
+            <div class="gallery-masonry">
+                
+                <!-- Image Items -->
+                <!-- Added data-rotation attribute for JS to pick up randomized rotations later if needed, or apply directly -->
+                
+                <div class="gallery-item">
+                    <div class="img-wrapper"><img src="photo_1_2025-11-20_12-01-34.jpg" alt="Flowers" loading="lazy"></div>
+                    <div class="shine-overlay"></div>
+                    <div class="overlay-text">Colors of Life</div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="img-wrapper"><img src="photo_2_2025-11-20_12-01-34.jpg" alt="River" loading="lazy"></div>
+                    <div class="shine-overlay"></div>
+                    <div class="overlay-text">River Serenity</div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="img-wrapper"><img src="photo_3_2025-11-20_12-01-34.jpg" alt="Sunset" loading="lazy"></div>
+                    <div class="shine-overlay"></div>
+                    <div class="overlay-text">Sunset Magic</div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="img-wrapper"><img src="photo_6_2025-11-20_12-01-34.jpg" alt="Boats" loading="lazy"></div>
+                    <div class="shine-overlay"></div>
+                    <div class="overlay-text">Peaceful Voyage</div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="img-wrapper"><img src="photo_7_2025-11-20_12-01-34.jpg" alt="Blue Water" loading="lazy"></div>
+                    <div class="shine-overlay"></div>
+                    <div class="overlay-text">Azure Waters</div>
+                </div>
+
+                 <div class="gallery-item">
+                    <div class="img-wrapper"><img src="photo_8_2025-11-20_12-01-34.jpg" alt="Evening" loading="lazy"></div>
+                    <div class="shine-overlay"></div>
+                    <div class="overlay-text">Night's Calm</div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="img-wrapper"><img src="photo_9_2025-11-20_12-01-34.jpg" alt="Silhouette" loading="lazy"></div>
+                    <div class="shine-overlay"></div>
+                    <div class="overlay-text">Shadows & Lights</div>
+                </div>
+
+                <div class="gallery-item">
+                    <div class="img-wrapper"><img src="photo_10_2025-11-20_12-01-34.jpg" alt="Moon" loading="lazy"></div>
+                    <div class="shine-overlay"></div>
+                    <div class="overlay-text">Radiant Moon</div>
+                </div>
+
+                 <div class="gallery-item">
+                    <div class="img-wrapper"><img src="photo_55_2025-11-20_12-01-34.jpg" alt="Horizon" loading="lazy"></div>
+                    <div class="shine-overlay"></div>
+                    <div class="overlay-text">Broad Horizon</div>
+                </div>
+
+            </div>
+        </main>
+
+        <footer class="text-center py-8 text-gray-400 text-xs md:text-sm relative z-10">Made with ❤️ for Maram</footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Hero Text
+            const title = document.getElementById('hero-title');
+            const text = "Maram Gallery";
+            title.innerHTML = text.split("").map((char, i) => 
+                `<span style="display:inline-block; animation: fadeUpChar 0.8s forwards; animation-delay: ${3.8 + (i * 0.05)}s; opacity:0; transform:translateY(20px); color: ${i < 5 ? '#E57373' : '#2C3E50'}">${char === ' ' ? '&nbsp;' : char}</span>`
+            ).join("");
+
+            createNatureElements();
+            
+            // Intro Timing
+            setTimeout(() => {
+                const intro = document.getElementById('intro-overlay');
+                intro.style.opacity = '0'; intro.style.visibility = 'hidden';
+                document.getElementById('main-content').classList.add('fade-in-visible');
+                initMasonryObserver();
+            }, 6500);
+        });
+
+        function createNatureElements() {
+            const container = document.getElementById('nature-container');
+            const petalCount = window.innerWidth < 768 ? 15 : 30;
+            for(let i=0; i<petalCount; i++) {
+                const el = document.createElement('div');
+                el.classList.add('nature-item', Math.random() > 0.7 ? 'leaf' : 'petal');
+                el.style.left = Math.random() * 100 + '%';
+                el.style.width = el.style.height = (Math.random() * 15 + 10) + 'px';
+                el.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                el.style.animationDelay = (Math.random() * 10) + 's';
+                container.appendChild(el);
+            }
+            const butterflyCount = window.innerWidth < 768 ? 4 : 8;
+            for(let i=0; i<butterflyCount; i++) {
+                const b = document.createElement('div');
+                b.classList.add('butterfly');
+                b.innerHTML = `<svg viewBox="0 0 24 24"><path d="M12 2C12 2 10 6 6 6C2 6 2 4 2 8C2 11 4 12 6 12C4 12 2 13 2 16C2 20 5 22 8 22C10 22 12 18 12 18C12 18 14 22 16 22C19 22 22 20 22 16C22 13 20 12 18 12C20 12 22 11 22 8C22 4 22 6 18 6C14 6 12 2 12 2Z"/></svg>`;
+                b.style.top = Math.random() * 80 + 10 + '%'; b.style.left = '-10%';
+                b.style.animationDuration = (Math.random() * 20 + 20) + 's';
+                b.style.animationDelay = (Math.random() * 15) + 's';
+                b.querySelector('svg').style.fill = `hsl(${Math.floor(Math.random() * 360)}, 70%, 70%)`;
+                container.appendChild(b);
+            }
+        }
+
+        function createClickEffects(e) {
+            const x = e.clientX; const y = e.clientY;
+            const nameEl = document.createElement('div');
+            nameEl.classList.add('click-name'); nameEl.innerText = 'Maram';
+            nameEl.style.left = `${x}px`; nameEl.style.top = `${y}px`;
+            document.body.appendChild(nameEl);
+            setTimeout(() => nameEl.remove(), 2000);
+            for (let i = 0; i < 8; i++) {
+                const tooth = document.createElement('div');
+                tooth.classList.add('click-tooth'); tooth.innerHTML = '🦷'; 
+                tooth.style.left = `${x}px`; tooth.style.top = `${y}px`;
+                const randomX = (Math.random() - 0.5) * 150; 
+                const randomRot = (Math.random() - 0.5) * 360;
+                tooth.style.setProperty('--tx', `${randomX}px`);
+                tooth.style.setProperty('--rot', `${randomRot}deg`);
+                tooth.style.animationDuration = `${0.8 + Math.random() * 0.5}s`;
+                document.body.appendChild(tooth);
+                setTimeout(() => tooth.remove(), 1300);
+            }
+        }
+
+        // --- New Masonry Observer Logic ---
+        function initMasonryObserver() {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if(entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        // Apply the stored random rotation when visible
+                        const rotation = entry.target.dataset.rotation || 0;
+                        entry.target.style.transform = `translateY(0) scale(1) rotate(${rotation}deg)`;
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+
+            const items = document.querySelectorAll('.gallery-item');
+            items.forEach((item, i) => {
+                // 1. Assign Random Rotation for "Scattered" Look (-4deg to 4deg)
+                const randomRot = (Math.random() * 8) - 4;
+                item.dataset.rotation = randomRot;
+                
+                // 2. Stagger delay
+                if(window.innerWidth > 768) {
+                    item.style.transitionDelay = (i % 3) * 0.15 + 's';
+                }
+                
+                observer.observe(item);
+                
+                item.addEventListener('click', (e) => {
+                    item.classList.remove('clicked'); void item.offsetWidth; item.classList.add('clicked');
+                    createClickEffects(e);
+                });
+            });
+        }
+
+        // Mouse Trail
+        if (window.matchMedia("(min-width: 769px)").matches) {
+            document.body.addEventListener('mousemove', (e) => {
+                if(Math.random() > 0.85) return;
+                let t = document.createElement('div');
+                t.style.position = 'fixed'; t.style.left = e.clientX + 'px'; t.style.top = e.clientY + 'px';
+                t.style.width = '6px'; t.style.height = '6px';
+                t.style.background = 'rgba(229, 115, 115, 0.5)';
+                t.style.borderRadius = '50%'; t.style.pointerEvents = 'none'; t.style.zIndex = '9999';
+                t.style.transition = 'all 0.5s ease-out';
+                document.body.appendChild(t);
+                setTimeout(() => { t.style.opacity = '0'; t.style.transform = 'scale(2)'; }, 10);
+                setTimeout(() => t.remove(), 510);
+            });
+        }
+    </script>
+    
+    <style>@keyframes fadeUpChar { to { opacity: 1; transform: translateY(0); } }</style>
+</body>
+</html>
