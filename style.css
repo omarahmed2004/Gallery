@@ -1,17 +1,20 @@
 /* --- Variables & General Styles --- */
 :root {
     --primary-color: #E57373;
-    --bg-color: #FFFBF0;
+    --secondary-color: #FFFBF0;
     --text-color: #2C3E50;
 }
 
 body {
     font-family: 'Lato', 'Playfair Display', serif;
-    background-color: var(--bg-color);
+    background-color: var(--secondary-color);
     color: var(--text-color);
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch; 
     position: relative;
+    margin: 0;
+    -webkit-tap-highlight-color: transparent;
+    min-height: 100vh; 
 }
 
 h1, h2, h3 { font-family: 'Playfair Display', serif; }
@@ -25,139 +28,196 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; }
 @keyframes blobFloat { 0% { transform: translate(0, 0) scale(1); } 33% { transform: translate(30px, -50px) scale(1.1); } 66% { transform: translate(-20px, 20px) scale(0.9); } 100% { transform: translate(0, 0) scale(1); } }
 
 /* --- Nature Elements --- */
-.nature-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
-.nature-item { position: absolute; background-size: contain; background-repeat: no-repeat; opacity: 0.7; }
+.nature-container { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    z-index: 1; 
+    pointer-events: none; 
+    overflow: hidden; 
+}
+
+.nature-item, .bg-butterfly { 
+    position: absolute; 
+    opacity: 0.6; 
+    will-change: transform;
+}
+
 .petal { background: linear-gradient(to bottom right, #ffc3a0, #ffafbd); border-radius: 100% 0 100% 0; animation: fall linear infinite; }
 .leaf { background: linear-gradient(to bottom right, #a8e063, #56ab2f); border-radius: 0 100% 0 100%; animation: fall linear infinite; }
-.butterfly { position: absolute; width: 20px; height: 20px; animation: fly linear infinite; }
-.butterfly svg { width: 100%; height: 100%; fill: #F48FB1; animation: flap 0.2s infinite alternate; }
+
+.bg-butterfly { width: 30px; height: 30px; animation: fly linear infinite; z-index: 2; }
+.bg-butterfly svg { width: 100%; height: 100%; fill: #F48FB1; animation: flap 0.2s infinite alternate; }
+
+/* --- TITLE FORMATION BUTTERFLIES --- */
+.formation-butterfly {
+    position: fixed;
+    width: 18px; height: 18px; 
+    z-index: 9999;
+    pointer-events: none;
+    animation: formAndScatter 4s ease-in-out forwards;
+}
+.formation-butterfly svg { width: 100%; height: 100%; animation: flap 0.1s infinite alternate; }
+
+@keyframes formAndScatter {
+    0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+    15% { transform: translate(var(--tx), var(--ty)) scale(1.2); opacity: 1; }
+    60% { transform: translate(var(--tx), var(--ty)) scale(1); opacity: 1; }
+    100% { transform: translate(var(--dx), var(--dy)) scale(0) rotate(var(--rot)); opacity: 0; }
+}
+
 @keyframes fall { 0% { transform: translateY(-10vh) translateX(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.8; } 90% { opacity: 0.8; } 100% { transform: translateY(110vh) translateX(100px) rotate(360deg); opacity: 0; } }
 @keyframes fly { 0% { transform: translate(-10vw, 100vh) scale(0.5); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translate(110vw, -10vh) scale(1); opacity: 0; } }
 @keyframes flap { from { transform: scaleX(1); } to { transform: scaleX(0.4); } }
 
-/* --- Explosive Intro Animation --- */
-#intro-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #fff; z-index: 100; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 1.5s ease-out, visibility 1.5s ease-out; overflow: hidden; }
-.heart-svg { overflow: visible; width: 180px; height: 180px; transform-origin: center; filter: drop-shadow(0 0 15px rgba(229, 115, 115, 0.5)); }
-.heart-path { fill: transparent; stroke: var(--primary-color); stroke-width: 3; stroke-dasharray: 1500; stroke-dashoffset: 1500; animation: drawHeart 2s ease-in-out forwards, fillHeart 1s 2s ease-in-out forwards, heartExplodeSequence 2.5s 3s forwards; transform-origin: center; }
-.intro-name { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); font-size: 3rem; font-weight: 700; background: linear-gradient(45deg, #E57373, #F06292, #FFD54F); -webkit-background-clip: text; -webkit-text-fill-color: transparent; opacity: 0; animation: textBlast 1.5s 4.4s cubic-bezier(0.22, 1, 0.36, 1) forwards; text-align: center; width: 100%; text-shadow: 0 0 30px rgba(229, 115, 115, 0.5); z-index: 10; }
-@media (min-width: 768px) { .intro-name { font-size: 5rem; } .heart-svg { width: 250px; height: 250px; } }
-@keyframes drawHeart { to { stroke-dashoffset: 0; } }
-@keyframes fillHeart { to { fill: var(--primary-color); stroke: none; } }
-@keyframes heartExplodeSequence { 0%, 20% { transform: scale(1); } 30% { transform: scale(1.25); } 40% { transform: scale(1); } 50% { transform: scale(1.25); } 60% { transform: scale(0.8); } 100% { transform: scale(50); opacity: 0; } }
-@keyframes textBlast { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0); filter: blur(20px); } 50% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); filter: blur(0); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+/* --- INTRO --- */
+#intro-overlay { 
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+    background-color: #fff; z-index: 100; 
+    display: flex; flex-direction: column; justify-content: center; align-items: center; 
+    transition: opacity 1.2s ease-out, visibility 1.2s ease-out; 
+    overflow: hidden; 
+    perspective: 1000px;
+}
 
-/* --- Main Content & Masonry Layout --- */
-.content-wrapper { opacity: 0; transition: opacity 2s ease-in; }
+.tooth-wrapper { position: relative; width: 220px; height: 280px; display: flex; justify-content: center; align-items: center; will-change: transform; }
+.tooth-svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; overflow: visible; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.1)); }
+.tooth-half { fill: transparent; stroke: #2C3E50; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1500; stroke-dashoffset: 1500; }
+
+#left-half { animation: drawLines 1.5s ease-in-out forwards, fillWhite 0.5s 1.5s ease-in-out forwards, shakeLeft 0.6s 2.0s cubic-bezier(.36,.07,.19,.97) both, splitLeft 2s 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; transform-origin: center right; }
+#right-half { animation: drawLines 1.5s ease-in-out forwards, fillWhite 0.5s 1.5s ease-in-out forwards, shakeRight 0.6s 2.0s cubic-bezier(.36,.07,.19,.97) both, splitRight 2s 2.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards; transform-origin: center left; }
+.crack-glow { position: absolute; width: 8px; height: 50%; background: #E57373; filter: blur(6px); opacity: 0; top: 25%; left: 50%; transform: translateX(-50%); animation: glowPulse 0.4s 2.4s ease-out forwards; }
+
+.intro-name { 
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); 
+    font-size: 13vw; font-weight: 700; 
+    background: linear-gradient(90deg, #E57373, #FFB74D, #BA68C8, #4DD0E1, #E57373); background-size: 300% auto; 
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+    opacity: 0; z-index: 50; 
+    animation: emergeName 1.8s 3.0s cubic-bezier(0.22, 1, 0.36, 1) forwards, gradientMove 3s infinite linear; 
+    text-align: center; white-space: nowrap; filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.8));
+}
+
+@media (min-width: 768px) { .intro-name { font-size: 6rem; } .tooth-wrapper { width: 320px; height: 400px; } }
+
+@keyframes drawLines { to { stroke-dashoffset: 0; } }
+@keyframes fillWhite { to { fill: #F9FAFB; stroke: #546E7A; stroke-width: 3; } }
+@keyframes shakeLeft { 10%, 90% { transform: translate(-1px, 0); } 50% { transform: translate(-3px, 0); } }
+@keyframes shakeRight { 10%, 90% { transform: translate(1px, 0); } 50% { transform: translate(3px, 0); } }
+@keyframes glowPulse { 0% { opacity: 0; transform: translateX(-50%) scaleY(0); } 50% { opacity: 1; transform: translateX(-50%) scaleY(1); } 100% { opacity: 0; transform: translateX(-50%) scaleY(1.2); } }
+@keyframes splitLeft { 0% { transform: translate(0, 0) rotate(0); opacity: 1; } 100% { transform: translate(-120vw, -50px) rotate(-45deg); opacity: 0; } }
+@keyframes splitRight { 0% { transform: translate(0, 0) rotate(0); opacity: 1; } 100% { transform: translate(120vw, -50px) rotate(45deg); opacity: 0; } }
+@keyframes emergeName { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0); filter: blur(15px); } 60% { opacity: 1; transform: translate(-50%, -50%) scale(1.1); filter: blur(0); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+@keyframes gradientMove { 0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; } }
+
+/* --- Content Wrapper --- */
+.content-wrapper { 
+    opacity: 0; transition: opacity 1.5s ease-in; position: relative; 
+    z-index: 10; 
+    pointer-events: none; 
+}
 .fade-in-visible { opacity: 1 !important; }
 
-.gallery-masonry {
-    column-count: 1;
-    column-gap: 2rem;
-    padding: 1rem;
-    max-width: 1400px;
-    margin: 0 auto;
+/* Re-enable events */
+.hero-container {
+    min-height: 60vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 1rem;
+    pointer-events: auto;
 }
-@media (min-width: 640px) { .gallery-masonry { column-count: 2; padding: 2rem; } }
+
+/* HERO TEXT STYLES */
+.hero-text { 
+    font-size: 2.8rem;
+    line-height: 1.1;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #2C3E50;
+    cursor: pointer; 
+    transition: transform 0.2s, color 0.3s;
+    display: inline-block;
+    text-shadow: 2px 2px 0px rgba(255, 255, 255, 0.8), 0 0 20px rgba(229, 115, 115, 0.15);
+    margin-bottom: 1rem;
+    position: relative;
+}
+
+.hero-text:active { transform: scale(0.95); }
+
+@media (min-width: 768px) { 
+    .hero-text { font-size: 7rem; margin-bottom: 1.5rem; } 
+    .hero-container { min-height: 70vh; }
+}
+
+.hero-subtext {
+    font-size: 1.2rem;
+    color: #555;
+    max-width: 90%;
+    margin-top: 0.5rem;
+    font-weight: 300;
+    font-style: italic;
+}
+@media (min-width: 768px) { .hero-subtext { font-size: 2rem; max-width: 800px; } }
+
+footer { pointer-events: auto; }
+
+/* Masonry Layout */
+.gallery-masonry { column-count: 1; column-gap: 1.5rem; padding: 1.5rem; max-width: 1400px; margin: 0 auto; pointer-events: none; }
+@media (min-width: 640px) { .gallery-masonry { column-count: 2; padding: 2rem; column-gap: 2rem; } }
 @media (min-width: 1024px) { .gallery-masonry { column-count: 3; column-gap: 3rem; } }
 
-/* --- POLAROID CARD (IMPROVED) --- */
-.gallery-item {
-    break-inside: avoid; 
-    margin-bottom: 3rem;
-    position: relative;
-    background: #fff;
-    padding: 15px 15px 50px 15px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-    transform-origin: center;
-    opacity: 0; 
-    transform: translateY(100px) scale(0.9) rotate(0deg);
-    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    perspective: 1000px;
-    will-change: transform;
+.gallery-item { 
+    break-inside: avoid; margin-bottom: 2.5rem; position: relative; background: #fff; 
+    padding: 12px 12px 45px 12px; 
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08); transform-origin: center; opacity: 0; 
+    transform: translateY(60px) scale(0.95); transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1); 
+    cursor: pointer; perspective: 1000px; will-change: transform; 
+    z-index: 20; pointer-events: auto;
 }
-
 .gallery-item.visible { opacity: 1; }
-
-/* Breathing Animation */
 .gallery-item.visible img { animation: photoBreathe 6s infinite alternate ease-in-out; }
-@keyframes photoBreathe {
-    from { transform: scale(1); }
-    to { transform: scale(1.02); }
+@keyframes photoBreathe { from { transform: scale(1); } to { transform: scale(1.02); } }
+
+/* --- CINEMATIC HOLD EFFECT --- */
+/* Define the pan & zoom animation */
+@keyframes cinematicMotion {
+    0% { transform: scale(1) translate(0, 0); }
+    33% { transform: scale(1.15) translate(-2%, 1%); }
+    66% { transform: scale(1.25) translate(1%, -2%); }
+    100% { transform: scale(1.35) translate(0, 0); }
 }
 
-.img-wrapper {
-    width: 100%;
-    overflow: hidden;
-    border: 1px solid #eee;
-    background: #f4f4f4;
+/* Class applied by JS when holding */
+.gallery-item.holding img {
+    animation: cinematicMotion 6s alternate infinite ease-in-out !important;
+    filter: sepia(0) saturate(1.4) contrast(1.1) !important; /* Make it pop visually */
+    transition: none; /* Remove transition so animation takes over immediately */
 }
 
-/* --- NEW: VINTAGE POP EFFECT (Desktop) --- */
-.gallery-item img {
-    width: 100%;
-    height: auto;
-    display: block;
-    /* Vintage: slightly warm, desaturated, low contrast */
-    filter: sepia(0.3) saturate(0.8) contrast(0.9);
-    transition: transform 0.5s ease, filter 0.5s ease;
-}
+.img-wrapper { width: 100%; overflow: hidden; border: 1px solid #eee; background: #f4f4f4; }
+.gallery-item img { width: 100%; height: auto; display: block; filter: sepia(0.3) saturate(0.8) contrast(0.9); transition: transform 0.5s ease, filter 0.5s ease; }
 
 @media (min-width: 769px) {
-    .gallery-item:hover {
-        z-index: 50;
-        transform: scale(1.1) rotate(0deg) !important;
-        box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-    }
-    /* On Hover: Remove vintage, make it Pop/Vibrant */
-    .gallery-item:hover img {
-        filter: sepia(0) saturate(1.1) contrast(1.05);
-        transform: scale(1.05);
-    }
+    .gallery-item { margin-bottom: 3rem; padding: 15px 15px 50px 15px; transform: translateY(100px) scale(0.9); }
+    .gallery-item:hover { z-index: 50; transform: scale(1.1) rotate(0deg) !important; box-shadow: 0 30px 60px rgba(0,0,0,0.25); }
+    .gallery-item:hover img { filter: sepia(0) saturate(1.1) contrast(1.05); transform: scale(1.05); }
 }
-
-/* --- NEW: TACTILE MOBILE FEEL --- */
 @media (max-width: 768px) {
-    /* Press Down Effect */
-    .gallery-item:active {
-        transform: scale(0.95) !important; /* Physical push feel */
-        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
-        transition: all 0.1s ease-out;
-    }
-    
-    /* Make image clear on press */
-    .gallery-item:active img {
-        filter: sepia(0) saturate(1.1) contrast(1);
-        animation-play-state: paused;
-    }
+    /* Slight press effect for mobile tap */
+    .gallery-item:active { transform: scale(0.98) !important; box-shadow: 0 2px 5px rgba(0,0,0,0.2); transition: all 0.1s ease-out; }
 }
 
-/* Click Bounce Release */
-.gallery-item.clicked { animation: clickBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-@keyframes clickBounce { 
-    0% { transform: scale(0.95); }
-    40% { transform: scale(1.05); } 
-    100% { transform: scale(1); }
-}
+.gallery-item.clicked { animation: clickBounce 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes clickBounce { 0% { transform: scale(0.98); } 40% { transform: scale(1.02); } 100% { transform: scale(1); } }
 
-.overlay-text {
-    position: absolute; bottom: 10px; left: 0; right: 0;
-    text-align: center; font-family: 'Great Vibes', cursive;
-    color: #555; font-size: 1.8rem; opacity: 0.8;
-    pointer-events: none;
-}
+.overlay-text { position: absolute; bottom: 10px; left: 0; right: 0; text-align: center; font-family: 'Great Vibes', cursive; color: #555; font-size: 1.6rem; opacity: 0.9; pointer-events: none; }
+@media (min-width: 768px) { .overlay-text { font-size: 1.8rem; bottom: 10px; } }
 
-/* Header */
-.hero-text { font-size: 3rem; line-height: 1.2; }
-@media (min-width: 768px) { .hero-text { font-size: 6rem; } }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-/* Click Effects */
 .click-tooth { position: fixed; font-size: 24px; pointer-events: none; z-index: 9999; animation: floatClickItem 1s ease-out forwards; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
 @keyframes floatClickItem { 0% { transform: scale(0.5) translateY(0) rotate(0deg); opacity: 1; } 100% { transform: scale(1.2) translateY(-80px) translateX(var(--tx)) rotate(var(--rot)); opacity: 0; } }
-
-.click-name { position: fixed; font-family: 'Great Vibes', cursive; font-size: 2.5rem; background: linear-gradient(45deg, #E57373, #FFD54F, #F06292); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; pointer-events: none; z-index: 10000; text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5); animation: popUpName 1.5s ease-out forwards; white-space: nowrap; }
+.click-name { position: fixed; font-family: 'Great Vibes', cursive; font-size: 2rem; background: linear-gradient(45deg, #E57373, #FFD54F, #F06292); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; pointer-events: none; z-index: 10000; text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5); animation: popUpName 1.5s ease-out forwards; white-space: nowrap; }
+@media (min-width: 768px) { .click-name { font-size: 2.5rem; } }
 @keyframes popUpName { 0% { transform: translate(-50%, 0) scale(0.5) rotate(-5deg); opacity: 0; } 20% { transform: translate(-50%, -40px) scale(1.2) rotate(0deg); opacity: 1; } 100% { transform: translate(-50%, -120px) scale(0.9); opacity: 0; } }
-
 @keyframes fadeUpChar { to { opacity: 1; transform: translateY(0); } }
