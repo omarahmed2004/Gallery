@@ -3,7 +3,6 @@
     --primary-color: #E57373;
     --bg-color: #FFFBF0;
     --text-color: #2C3E50;
-    --card-bg: #ffffff;
 }
 
 body {
@@ -51,7 +50,6 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; }
 .content-wrapper { opacity: 0; transition: opacity 2s ease-in; }
 .fade-in-visible { opacity: 1 !important; }
 
-/* TRUE MASONRY using Columns */
 .gallery-masonry {
     column-count: 1;
     column-gap: 2rem;
@@ -62,86 +60,92 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; }
 @media (min-width: 640px) { .gallery-masonry { column-count: 2; padding: 2rem; } }
 @media (min-width: 1024px) { .gallery-masonry { column-count: 3; column-gap: 3rem; } }
 
-/* Polaroid Card Style */
+/* --- POLAROID CARD (IMPROVED) --- */
 .gallery-item {
-    break-inside: avoid; /* Prevent breaking across columns */
+    break-inside: avoid; 
     margin-bottom: 3rem;
     position: relative;
     background: #fff;
-    padding: 15px 15px 50px 15px; /* Extra bottom padding for Polaroid look */
+    padding: 15px 15px 50px 15px; 
     box-shadow: 0 10px 25px rgba(0,0,0,0.1);
     transform-origin: center;
-    opacity: 0; /* Initial hidden state */
-    /* Initial Scatter Rotation (will be randomized in JS) */
+    opacity: 0; 
     transform: translateY(100px) scale(0.9) rotate(0deg);
-    transition: all 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+    transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow 0.3s ease;
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
     perspective: 1000px;
+    will-change: transform;
 }
 
-/* Visible State (Scrolled in) */
-.gallery-item.visible {
-    opacity: 1;
-    /* Transform is handled via JS to keep the rotation */
-}
+.gallery-item.visible { opacity: 1; }
 
-/* Continuous Breathing for "Alive" feel */
-.gallery-item.visible img {
-    animation: photoBreathe 6s infinite alternate ease-in-out;
-}
-
+/* Breathing Animation */
+.gallery-item.visible img { animation: photoBreathe 6s infinite alternate ease-in-out; }
 @keyframes photoBreathe {
-    from { transform: scale(1); filter: brightness(1); }
-    to { transform: scale(1.05); filter: brightness(1.05); }
+    from { transform: scale(1); }
+    to { transform: scale(1.02); }
 }
 
-/* Hover Effect (Focus) */
-.gallery-item:hover {
-    z-index: 50;
-    transform: scale(1.1) rotate(0deg) !important; /* Straighten and zoom */
-    box-shadow: 0 30px 60px rgba(0,0,0,0.25);
-}
-
-/* Image Wrapper */
 .img-wrapper {
     width: 100%;
     overflow: hidden;
-    /* Slight border radius for the photo inside the polaroid */
-    border: 1px solid #eee; 
+    border: 1px solid #eee;
+    background: #f4f4f4;
 }
 
+/* --- NEW: VINTAGE POP EFFECT (Desktop) --- */
 .gallery-item img {
     width: 100%;
     height: auto;
     display: block;
-    transition: transform 8s ease; /* Slow pan for breathing */
+    /* Vintage: slightly warm, desaturated, low contrast */
+    filter: sepia(0.3) saturate(0.8) contrast(0.9);
+    transition: transform 0.5s ease, filter 0.5s ease;
 }
 
-/* Shine Effect on Hover */
-.shine-overlay {
-    position: absolute; top: 0; left: -100%; width: 50%; height: 100%;
-    background: linear-gradient(to right, transparent, rgba(255,255,255,0.4), transparent);
-    transform: skewX(-25deg); z-index: 10; pointer-events: none; transition: left 0.5s;
-}
-.gallery-item:hover .shine-overlay {
-    left: 200%;
-    transition: left 1s ease-in-out;
+@media (min-width: 769px) {
+    .gallery-item:hover {
+        z-index: 50;
+        transform: scale(1.1) rotate(0deg) !important;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+    }
+    /* On Hover: Remove vintage, make it Pop/Vibrant */
+    .gallery-item:hover img {
+        filter: sepia(0) saturate(1.1) contrast(1.05);
+        transform: scale(1.05);
+    }
 }
 
-/* Click Animation */
-.gallery-item.clicked { animation: clickBounce 0.4s; }
-@keyframes clickBounce { 0% { transform: scale(1.1); } 50% { transform: scale(1.05); } 100% { transform: scale(1.1); } }
+/* --- NEW: TACTILE MOBILE FEEL --- */
+@media (max-width: 768px) {
+    /* Press Down Effect */
+    .gallery-item:active {
+        transform: scale(0.95) !important; /* Physical push feel */
+        box-shadow: 0 5px 10px rgba(0,0,0,0.3);
+        transition: all 0.1s ease-out;
+    }
+    
+    /* Make image clear on press */
+    .gallery-item:active img {
+        filter: sepia(0) saturate(1.1) contrast(1);
+        animation-play-state: paused;
+    }
+}
 
-/* Overlay Text (Handwritten Style for Polaroid) */
+/* Click Bounce Release */
+.gallery-item.clicked { animation: clickBounce 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+@keyframes clickBounce { 
+    0% { transform: scale(0.95); }
+    40% { transform: scale(1.05); } 
+    100% { transform: scale(1); }
+}
+
 .overlay-text {
-    position: absolute;
-    bottom: 10px; left: 0; right: 0;
-    text-align: center;
-    font-family: 'Great Vibes', cursive; /* Handwriting font */
-    color: #555;
-    font-size: 1.8rem;
-    opacity: 0.8;
+    position: absolute; bottom: 10px; left: 0; right: 0;
+    text-align: center; font-family: 'Great Vibes', cursive;
+    color: #555; font-size: 1.8rem; opacity: 0.8;
+    pointer-events: none;
 }
 
 /* Header */
@@ -150,11 +154,10 @@ h1, h2, h3 { font-family: 'Playfair Display', serif; }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
 /* Click Effects */
-.click-tooth { position: fixed; font-size: 22px; pointer-events: none; z-index: 9999; animation: floatClickItem 1.2s ease-out forwards; }
-@keyframes floatClickItem { 0% { transform: scale(0.5) translateY(0) rotate(0deg); opacity: 1; } 100% { transform: scale(1.2) translateY(-60px) translateX(var(--tx)) rotate(var(--rot)); opacity: 0; } }
-.click-name { position: fixed; font-family: 'Great Vibes', cursive; font-weight: normal; font-size: 2.5rem; background: linear-gradient(45deg, #E57373, #FFD54F, #F06292); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; pointer-events: none; z-index: 10000; text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5); animation: popUpName 1.8s ease-out forwards, shimmer 2s linear infinite; white-space: nowrap; }
-@keyframes popUpName { 0% { transform: translate(-50%, 0) scale(0.5) rotate(-5deg); opacity: 0; } 20% { transform: translate(-50%, -30px) scale(1.3) rotate(0deg); opacity: 1; } 70% { opacity: 1; transform: translate(-50%, -80px) scale(1.1); } 100% { transform: translate(-50%, -120px) scale(0.8); opacity: 0; } }
-@keyframes shimmer { to { background-position: 200% center; } }
+.click-tooth { position: fixed; font-size: 24px; pointer-events: none; z-index: 9999; animation: floatClickItem 1s ease-out forwards; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); }
+@keyframes floatClickItem { 0% { transform: scale(0.5) translateY(0) rotate(0deg); opacity: 1; } 100% { transform: scale(1.2) translateY(-80px) translateX(var(--tx)) rotate(var(--rot)); opacity: 0; } }
 
-/* Extra Animation for JS generated content */
+.click-name { position: fixed; font-family: 'Great Vibes', cursive; font-size: 2.5rem; background: linear-gradient(45deg, #E57373, #FFD54F, #F06292); background-size: 200% auto; -webkit-background-clip: text; -webkit-text-fill-color: transparent; pointer-events: none; z-index: 10000; text-shadow: 0 2px 10px rgba(255, 255, 255, 0.5); animation: popUpName 1.5s ease-out forwards; white-space: nowrap; }
+@keyframes popUpName { 0% { transform: translate(-50%, 0) scale(0.5) rotate(-5deg); opacity: 0; } 20% { transform: translate(-50%, -40px) scale(1.2) rotate(0deg); opacity: 1; } 100% { transform: translate(-50%, -120px) scale(0.9); opacity: 0; } }
+
 @keyframes fadeUpChar { to { opacity: 1; transform: translateY(0); } }
